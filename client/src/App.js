@@ -1,19 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import Register from './components/Register';
-import Login from './components/Login';
-import Profile from './components/Profile';
+import Register from './pages/Register';
+import Login from './pages/Login';
+import Profile from './features/profile/Profile';
 
 function App() {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true); // Dodano
+  const [loading, setLoading] = useState(true); 
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
       setUser(JSON.parse(storedUser));
     }
-    setLoading(false); // Tek sada renderiraj rute
+    setLoading(false);
   }, []);
 
   const handleLogout = () => {
@@ -21,7 +21,7 @@ function App() {
     localStorage.removeItem('user');
   };
 
-  if (loading) return <div>Loading...</div>; // Prikaži loader dok ne provjeriš localStorage
+  if (loading) return <div>Loading...</div>; 
 
   return (
     <Router>

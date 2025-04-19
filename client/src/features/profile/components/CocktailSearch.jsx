@@ -6,7 +6,6 @@ function CocktailSearch({ onCocktailClick }) {
   const [cocktails, setCocktails] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  // Funkcija za dohvat koktela
   const fetchCocktails = (term) => {
     if (!term) {
       setCocktails([]);
@@ -37,7 +36,6 @@ function CocktailSearch({ onCocktailClick }) {
       fetchCocktails(searchTerm);
     }, 500);
     return () => clearTimeout(timer);
-    // eslint-disable-next-line
   }, [searchTerm]);
 
   // OnSubmit za Enter

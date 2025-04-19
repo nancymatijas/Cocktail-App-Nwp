@@ -19,6 +19,9 @@ app.use('/api', authRoutes);
 const adminRoutes = require('./routes/admin');
 app.use('/api', adminRoutes);
 
+const favoriteRoutes = require('./routes/favorites');
+app.use('/api/favorites', favoriteRoutes);
+
 app.get('/api', (req, res) => {
   res.json({ message: 'API radi!' });
 });

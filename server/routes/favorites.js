@@ -1,58 +1,37 @@
 const express = require('express');
 const router = express.Router();
-const auth = require('../middleware/auth');
 const Favorite = require('../models/Favorite');
+const auth = require('../middleware/auth'); 
 
-// Dodaj u favorite
 router.post('/', auth, async (req, res) => {
   try {
-    const favorite = new Favorite({
-      user: req.user.id,
-      cocktailId: req.body.cocktailId
-    });
-    
-    await favorite.save();
-    res.status(201).json(favorite);
+    const { cocktailId } = req.body;
+    const favorite = await Favorite.findOneAndUpdate(
+      { user: req.user.id, cocktailId },
+      { user: req.user.id, cocktailId },
+      { upsert: true, new: true, setDefaultsOnInsert: true }
+    );
+    res.json(favorite);
   } catch (err) {
-    if (err.code === 11000) {
-      return res.status(400).json({ msg: 'Cocktail je već u favoritima' });
-    }
-    console.error(err.message);
-    res.status(500).send('Server Error');
+    res.status(500).json({ error: 'Server error' });
   }
 });
 
-// Ukloni iz favorita
 router.delete('/:cocktailId', auth, async (req, res) => {
   try {
-    const favorite = await Favorite.findOneAndDelete({
-      user: req.user.id,
-      cocktailId: req.params.cocktailId
-    });
-    
-    if (!favorite) {
-      return res.status(404).json({ msg: 'Favorite nije pronađen' });
-    }
-    
-    res.json({ msg: 'Favorite uklonjen' });
+    await Favorite.findOneAndDelete({ user: req.user.id, cocktailId: req.params.cocktailId });
+    res.json({ success: true });
   } catch (err) {
-    console.error(err.message);
-    res.status(500).send('Server Error');
+    res.status(500).json({ error: 'Server error' });
   }
 });
 
-// Dohvati sve favorite korisnika
 router.get('/', auth, async (req, res) => {
   try {
-    const favorites = await Favorite.find({ user: req.user.id })
-      .select('cocktailId -_id')
-      .lean();
-      
-    const cocktailIds = favorites.map(f => f.cocktailId);
-    res.json(cocktailIds);
+    const favorites = await Favorite.find({ user: req.user.id }).select('cocktailId -_id');
+    res.json(favorites.map(f => f.cocktailId));
   } catch (err) {
-    console.error(err.message);
-    res.status(500).send('Server Error');
+    res.status(500).json({ error: 'Server error' });
   }
 });
 

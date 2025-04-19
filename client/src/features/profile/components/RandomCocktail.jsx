@@ -19,7 +19,6 @@ function RandomCocktail() {
     fetchRandomCocktail();
   }, []);
 
-  // Modern sticker-style ingredient gallery
   const renderIngredients = (cocktail) => {
     const ingredients = [];
     for (let i = 1; i <= 15; i++) {
@@ -70,7 +69,6 @@ function RandomCocktail() {
     return ingredients;
   };
 
-  // Inline CSS for hover effect (no external CSS needed)
   useEffect(() => {
     const style = document.createElement('style');
     style.innerHTML = `
