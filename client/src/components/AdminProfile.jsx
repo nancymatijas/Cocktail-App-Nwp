@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ListGroup, Button } from 'react-bootstrap';
+import { Card, ListGroup, Button, Badge, Image } from 'react-bootstrap';
 import { jwtDecode } from 'jwt-decode';
 
 function AdminProfile({ token }) {
@@ -15,7 +15,7 @@ function AdminProfile({ token }) {
   }, [token]);
 
   const handleDelete = async (id) => {
-    if (!window.confirm('Jesi li siguran da želiš obrisati ovog korisnika?')) return;
+    if (!window.confirm('Are you sure you want to delete this user?')) return;
     const response = await fetch(`http://localhost:5000/api/users/${id}`, {
       method: "DELETE",
       headers: { "Authorization": `Bearer ${token}` }
@@ -24,21 +24,45 @@ function AdminProfile({ token }) {
   };
 
   return (
-    <div className="mt-4">
-      <h4>Svi korisnici</h4>
-      <ListGroup>
-        {users.map(user => (
-          <ListGroup.Item key={user._id} className="d-flex justify-content-between align-items-center">
-            <span>{user.username} ({user.email})</span>
-            {user._id !== adminId && (
-              <Button variant="outline-danger" size="sm" onClick={() => handleDelete(user._id)}>
-                Obriši
-              </Button>
-            )}
-          </ListGroup.Item>
-        ))}
-      </ListGroup>
-    </div>
+    <Card className="mt-4 shadow-sm">
+      <Card.Body>
+        <Card.Title className="mb-3 text-center">User List</Card.Title>
+        <ListGroup variant="flush">
+          {users.map(user => (
+            <ListGroup.Item
+              key={user._id}
+              className="d-flex justify-content-between align-items-center"
+            >
+              <div className="d-flex align-items-center">
+                <Image
+                  src={`https://ui-avatars.com/api/?name=${user.username}&background=random`}
+                  roundedCircle
+                  width={36}
+                  height={36}
+                  className="me-3"
+                  alt="avatar"
+                />
+                <span>
+                  <strong>{user.username}</strong> <span className="text-muted">({user.email})</span>
+                  {user.role === 'admin' && (
+                    <Badge bg="warning" text="dark" className="ms-2">Admin</Badge>
+                  )}
+                </span>
+              </div>
+              {user._id !== adminId && (
+                <Button
+                  variant="outline-danger"
+                  size="sm"
+                  onClick={() => handleDelete(user._id)}
+                >
+                  Delete
+                </Button>
+              )}
+            </ListGroup.Item>
+          ))}
+        </ListGroup>
+      </Card.Body>
+    </Card>
   );
 }
 
