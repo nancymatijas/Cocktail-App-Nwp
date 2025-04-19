@@ -35,5 +35,4 @@ function CocktailList({ cocktails, onCocktailClick, favorites, onFavoriteToggle 
   );
 }
 
-
 export default CocktailList;
