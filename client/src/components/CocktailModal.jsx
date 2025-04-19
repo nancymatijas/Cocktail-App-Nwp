@@ -1,7 +1,7 @@
 import React from 'react';
 import { Modal, Button, Row, Col, Badge } from 'react-bootstrap';
 
-function CocktailModal({ show, onHide, cocktail }) {
+function CocktailModal({ show, onHide, cocktail, isFavorite, onFavoriteToggle }) {
   const renderIngredients = (cocktail) => {
     const ingredients = [];
     for (let i = 1; i <= 15; i++) {
@@ -76,9 +76,13 @@ function CocktailModal({ show, onHide, cocktail }) {
         </Row>
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="secondary" onClick={onHide}>
-          Close
+        <Button 
+          variant={isFavorite ? "danger" : "outline-primary"} 
+          onClick={() => onFavoriteToggle(cocktail?.idDrink)}
+        >
+          {isFavorite ? '❤️ Remove from Favorites' : '🤍 Add to Favorites'}
         </Button>
+        <Button variant="secondary" onClick={onHide}>Close</Button>
       </Modal.Footer>
     </Modal>
   );
