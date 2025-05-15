@@ -1,8 +1,14 @@
 import React from 'react';
 import CocktailSearch from '../components/CocktailSearch';
 
-function SearchTab({ onCocktailClick }) {
-  return <CocktailSearch onCocktailClick={onCocktailClick} />;
+function SearchTab({ onCocktailClick, favorites, onFavoriteToggle }) {
+  return (
+    <CocktailSearch
+      onCocktailClick={onCocktailClick}
+      favorites={favorites}
+      onFavoriteToggle={onFavoriteToggle}
+    />
+  );
 }
 
 export default SearchTab;

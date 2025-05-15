@@ -1,23 +1,14 @@
-import React, { useEffect, useState } from 'react';
-import { Card, Button, Spinner, Badge } from 'react-bootstrap';
+import React, { useEffect } from 'react';
+import { Card, Button, Spinner, Badge, Row, Col } from 'react-bootstrap';
+import { useRandomCocktail } from '../hooks/useRandomCocktail';
+import "../../../App.css";
 
 function RandomCocktail() {
-  const [randomCocktail, setRandomCocktail] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  const fetchRandomCocktail = () => {
-    setLoading(true);
-    fetch('https://www.thecocktaildb.com/api/json/v1/1/random.php')
-      .then(res => res.json())
-      .then(data => {
-        setRandomCocktail(data.drinks[0]);
-        setLoading(false);
-      });
-  };
+  const { cocktail, loading, fetchRandomCocktail } = useRandomCocktail();
 
   useEffect(() => {
     fetchRandomCocktail();
-  }, []);
+  }, [fetchRandomCocktail]);
 
   const renderIngredients = (cocktail) => {
     const ingredients = [];
@@ -26,111 +17,67 @@ function RandomCocktail() {
       const measure = cocktail[`strMeasure${i}`];
       if (ingredient) {
         ingredients.push(
-          <div
-            key={i}
-            style={{
-              display: 'inline-block',
-              margin: '0 18px 18px 0',
-              textAlign: 'center',
-              transition: 'transform 0.2s, box-shadow 0.2s',
-              cursor: 'pointer'
-            }}
-            className="ingredient-sticker"
-          >
-            <img
-              src={`https://www.thecocktaildb.com/images/ingredients/${encodeURIComponent(ingredient)}.png`}
-              alt={ingredient}
-              style={{
-                width: 80,
-                height: 80,
-                objectFit: 'contain',
-                marginBottom: 8,
-                borderRadius: 16,
-                boxShadow: '0 2px 8px #ccc',
-                background: '#fff',
-                border: '1px solid #eee',
-                transition: 'transform 0.2s, box-shadow 0.2s'
-              }}
-              onError={e => { e.target.style.display = 'none'; }}
-              className="ingredient-img"
-            />
-            <div style={{ fontWeight: 600, fontSize: 16, color: '#333' }}>{ingredient}</div>
-            {measure && (
-              <div>
-                <Badge bg="secondary" className="mt-1" style={{ fontSize: 13 }}>
+          <Col key={i} xs={6} md={4} lg={3} className="mb-3">
+            <div className="cocktail-ingredient">
+              <img
+                src={`https://www.thecocktaildb.com/images/ingredients/${encodeURIComponent(ingredient)}.png`}
+                alt={ingredient}
+                className="ingredient-img"
+                onError={e => { e.target.style.display = 'none'; }}
+              />
+              <div className="ingredient-name">{ingredient}</div>
+              {measure && (
+                <Badge bg="secondary" className="measure-badge">
                   {measure.trim()}
                 </Badge>
-              </div>
-            )}
-          </div>
+              )}
+            </div>
+          </Col>
         );
       }
     }
     return ingredients;
   };
 
-  useEffect(() => {
-    const style = document.createElement('style');
-    style.innerHTML = `
-      .ingredient-sticker:hover .ingredient-img {
-        transform: scale(1.10) rotate(-2deg);
-        box-shadow: 0 6px 20px #bbb;
-      }
-    `;
-    document.head.appendChild(style);
-    return () => { document.head.removeChild(style); };
-  }, []);
-
   return (
-    <div className="text-center my-4">
+    <div className="random-cocktail-container text-center my-4">
       {loading ? (
         <Spinner animation="border" />
-      ) : randomCocktail ? (
-        <Card className="mx-auto" style={{ maxWidth: 500 }}>
-          <Card.Img
-            variant="top"
-            src={randomCocktail.strDrinkThumb}
-            alt={randomCocktail.strDrink}
-            style={{
-              maxHeight: 320,
-              maxWidth: 350,
-              objectFit: 'contain',
-              background: '#f8f9fa',
-              margin: '0 auto',
-              display: 'block',
-              borderRadius: '12px'
-            }}
-          />
+      ) : cocktail ? (
+        <Card className="mx-auto" style={{ maxWidth: 1500 }}>
           <Card.Body>
-            <Card.Title>
-              {randomCocktail.strDrink}{' '}
-              {randomCocktail.strAlcoholic === "Alcoholic" ? (
-                <span role="img" aria-label="alcoholic">🍸</span>
-              ) : (
-                <span role="img" aria-label="non-alcoholic">🥤</span>
-              )}
-            </Card.Title>
-            <div className="mb-2">
-              <Badge bg="info" className="me-2">{randomCocktail.strCategory}</Badge>
-              <Badge bg="secondary">{randomCocktail.strGlass}</Badge>
-            </div>
-            <h5>Ingredients:</h5>
-            <div
-              style={{
-                display: 'flex',
-                flexWrap: 'wrap',
-                justifyContent: 'center',
-                gap: '10px',
-                marginBottom: '1.5rem'
-              }}
-            >
-              {renderIngredients(randomCocktail)}
-            </div>
-            <h5>Instructions:</h5>
-            <p>{randomCocktail.strInstructions}</p>
-            <Button onClick={fetchRandomCocktail} variant="info" className="mt-2">
-              Show another random cocktail
-            </Button>
+            <Row>
+              <Col md={4} className="d-flex justify-content-center align-items-start mb-4">
+                <img
+                  src={cocktail.strDrinkThumb}
+                  alt={cocktail.strDrink}
+                  className="cocktail-image"
+                />
+              </Col>
+              <Col md={8} className="text-start">
+                <Card.Title className="cocktail-title">
+                  {cocktail.strDrink}{' '}
+                  {cocktail.strAlcoholic === "Alcoholic" ? (
+                    <span role="img" aria-label="alcoholic">🍸</span>
+                  ) : (
+                    <span role="img" aria-label="non-alcoholic">🥤</span>
+                  )}
+                </Card.Title>
+                <div className="mb-2">
+                  <Badge bg="info" className="me-2">{cocktail.strCategory}</Badge>
+                  <Badge bg="secondary">{cocktail.strGlass}</Badge>
+                </div>
+                <h5>Ingredients:</h5>
+                <Row className="g-2 ingredients-container">
+                  {renderIngredients(cocktail)}
+                </Row>
+                <h5 className="mt-4">Instructions:</h5>
+                <p>{cocktail.strInstructions}</p>
+                <Button onClick={fetchRandomCocktail} variant="info" className="mt-2">
+                  Show another random cocktail
+                </Button>
+              </Col>
+            </Row>
           </Card.Body>
         </Card>
       ) : (

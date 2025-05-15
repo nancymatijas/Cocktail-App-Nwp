@@ -1,5 +1,6 @@
 import React from 'react';
 import { Modal, Button, Row, Col, Badge } from 'react-bootstrap';
+import "../../../App.css"
 
 function CocktailModal({ show, onHide, cocktail, isFavorite, onFavoriteToggle }) {
   const renderIngredients = (cocktail) => {
@@ -10,31 +11,16 @@ function CocktailModal({ show, onHide, cocktail, isFavorite, onFavoriteToggle })
       if (ingredient) {
         ingredients.push(
           <Col key={i} xs={6} md={4} lg={3} className="mb-3">
-            <div style={{
-              background: '#fff',
-              border: '1px solid #eee',
-              borderRadius: 16,
-              padding: 12,
-              textAlign: 'center',
-              boxShadow: '0 2px 8px #eee',
-              transition: 'transform 0.2s'
-            }}>
+            <div className="cocktail-ingredient">
               <img
                 src={`https://www.thecocktaildb.com/images/ingredients/${encodeURIComponent(ingredient)}.png`}
                 alt={ingredient}
-                style={{
-                  width: 64,
-                  height: 64,
-                  objectFit: 'contain',
-                  marginBottom: 8,
-                  borderRadius: '50%',
-                  border: '1px solid #ddd'
-                }}
+                className="ingredient-img"
                 onError={e => { e.target.style.display = 'none'; }}
               />
-              <div className="fw-bold" style={{ fontSize: 14 }}>{ingredient}</div>
+              <div className="ingredient-name">{ingredient}</div>
               {measure && (
-                <Badge bg="secondary" className="mt-1" style={{ fontSize: 12 }}>
+                <Badge bg="secondary" className="measure-badge">
                   {measure.trim()}
                 </Badge>
               )}
@@ -57,11 +43,7 @@ function CocktailModal({ show, onHide, cocktail, isFavorite, onFavoriteToggle })
             <img
               src={cocktail?.strDrinkThumb}
               alt={cocktail?.strDrink}
-              style={{
-                width: '100%',
-                borderRadius: 12,
-                boxShadow: '0 4px 12px #ddd'
-              }}
+              className="cocktail-image"
             />
           </Col>
           <Col md={8}>
@@ -69,20 +51,18 @@ function CocktailModal({ show, onHide, cocktail, isFavorite, onFavoriteToggle })
             <Row className="g-2">
               {cocktail && renderIngredients(cocktail)}
             </Row>
-
             <h5 className="mt-4">Instructions:</h5>
             <p>{cocktail?.strInstructions}</p>
           </Col>
         </Row>
       </Modal.Body>
       <Modal.Footer>
-        <Button 
-          variant={isFavorite ? "danger" : "outline-primary"} 
+        <Button
+          className={isFavorite ? "favorite-button-danger" : "favorite-button-outline-primary"}
           onClick={() => onFavoriteToggle(cocktail?.idDrink)}
         >
           {isFavorite ? '❤️ Remove from Favorites' : '🤍 Add to Favorites'}
         </Button>
-        <Button variant="secondary" onClick={onHide}>Close</Button>
       </Modal.Footer>
     </Modal>
   );

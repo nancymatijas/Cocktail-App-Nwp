@@ -9,12 +9,15 @@ const app = express();
 
 app.use(cors({
   origin: "http://localhost:3000",
-  methods: ["GET", "POST", "PUT", "DELETE"]
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH"]
 }));
 app.use(express.json());
 
 const authRoutes = require('./routes/auth');
 app.use('/api', authRoutes);
+
+const userRoutes = require('./routes/users');
+app.use('/api', userRoutes);
 
 const adminRoutes = require('./routes/admin');
 app.use('/api', adminRoutes);

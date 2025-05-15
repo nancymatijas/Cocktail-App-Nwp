@@ -1,12 +1,13 @@
 import React from 'react';
 import { Row, Col, Card } from 'react-bootstrap';
+import "../../../App.css"
 
 function CocktailList({ cocktails, onCocktailClick, favorites, onFavoriteToggle }) {
   return (
     <Row xs={1} sm={2} md={4} className="g-4">
       {cocktails.map(cocktail => (
         <Col key={cocktail.idDrink}>
-          <Card className="h-100" style={{ cursor: 'pointer' }}>
+          <Card className="h-100 cocktail-hover-card">
             <Card.Img 
               variant="top" 
               src={cocktail.strDrinkThumb} 
@@ -17,8 +18,8 @@ function CocktailList({ cocktails, onCocktailClick, favorites, onFavoriteToggle 
                 <Card.Title onClick={() => onCocktailClick(cocktail.idDrink)}>
                   {cocktail.strDrink}
                 </Card.Title>
-                <span 
-                  style={{ cursor: 'pointer', fontSize: '1.5rem' }}
+                <span
+                  className="favorite-icon"
                   onClick={(e) => {
                     e.stopPropagation();
                     onFavoriteToggle(cocktail.idDrink);

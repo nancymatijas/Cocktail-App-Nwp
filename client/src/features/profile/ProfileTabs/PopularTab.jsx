@@ -1,11 +1,10 @@
-import React from 'react';
 import { Spinner } from 'react-bootstrap';
 import CocktailList from '../components/CocktailList';
 
 function PopularTab({ loading, cocktails, onCocktailClick, favorites, onFavoriteToggle }) {
   return (
     <>
-      <h3 className="text-center mb-4 mt-4">Popular cocktails</h3>
+      {/* <h3 className="text-center mb-4 mt-4">Popular cocktails</h3> */}
       {loading ? (
         <div className="text-center">
           <Spinner animation="border" />

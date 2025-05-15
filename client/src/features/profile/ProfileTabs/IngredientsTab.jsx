@@ -1,6 +1,7 @@
-import React from 'react';
-import { Button, Spinner } from 'react-bootstrap';
+import React, { useEffect, useRef } from 'react';
+import { Spinner, Button } from 'react-bootstrap';
 import CocktailList from '../components/CocktailList';
+import "../../../App.css"
 
 function IngredientsTab({ 
   ingredients, 
@@ -12,23 +13,45 @@ function IngredientsTab({
   favorites, 
   onFavoriteToggle 
 }) {
+  const scrollRef = useRef(null);
+
+  useEffect(() => {
+    if (selectedIngredient && scrollRef.current) {
+      scrollRef.current.scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }
+  }, [selectedIngredient, ingredientCocktails]);
+
   return (
     <div className="my-4">
-      <h3 className="text-center mb-4">Browse by Alcohol Type</h3>
-      <div className="d-flex flex-wrap gap-2 justify-content-center">
+      {/* <h3 className="text-center mb-4">Browse by Alcohol Type</h3> */}
+      <div className="ingredient-gallery">
         {ingredients.slice(0, 30).map(ingredient => (
-          <Button
+          <div
             key={ingredient}
-            variant={selectedIngredient === ingredient ? 'primary' : 'outline-primary'}
+            className={`ingredient-tile${selectedIngredient === ingredient ? ' selected' : ''}`}
             onClick={() => onSelectIngredient(ingredient)}
+            title={ingredient}
           >
-            {ingredient}
-          </Button>
+            <img
+              src={`https://www.thecocktaildb.com/images/ingredients/${ingredient.replace(/ /g, '%20')}-Medium.png`}
+              alt={ingredient}
+              className="ingredient-img-lg"
+              onError={e => { 
+                e.target.src = `https://www.thecocktaildb.com/images/ingredients/${ingredient.replace(/ /g, '%20')}-small.png`;
+              }}
+            />
+            <div className="ingredient-overlay">{ingredient}</div>
+          </div>
         ))}
       </div>
       {selectedIngredient && (
-        <div className="mt-4">
-          <h4 className="text-center mb-3">Cocktails with {selectedIngredient}</h4>
+        <div ref={scrollRef} className="mt-4">
+          <h4 className="text-center mb-3">
+            Cocktails with <span style={{ color: '#007bff' }}>{selectedIngredient}</span>
+          </h4>
           {ingredientLoading ? (
             <div className="text-center">
               <Spinner animation="border" />

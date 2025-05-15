@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
+const mongoose = require('mongoose');
+
 
 const adminAuth = async (req, res, next) => {
   const authHeader = req.headers.authorization;
@@ -23,19 +25,35 @@ const adminAuth = async (req, res, next) => {
   }
 };
 
+
 router.get('/users', adminAuth, async (req, res) => {
   try {
-    const users = await User.find({}, '-password'); 
+    const users = await User.find({}, '-password -__v'); 
     res.json(users);
   } catch (err) {
     res.status(500).json({ error: 'Greška pri dohvaćanju korisnika' });
   }
 });
 
+router.get('/users/:id', adminAuth, async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id).select('-password -__v');
+    
+    if (!user) {
+      return res.status(404).json({ error: "Korisnik nije pronađen." });
+    }
+    
+    res.json(user);
+  } catch (err) {
+    console.error("Greška pri dohvaćanju korisnika:", err);
+    res.status(500).json({ error: "Greška na serveru." });
+  }
+});
+
 
 router.delete('/users/:id', adminAuth, async (req, res) => {
   try {
-    const userId = req.params.id; // Ensure this matches the ID from the URL
+    const userId = req.params.id; 
     const user = await User.findByIdAndDelete(userId);
     
     if (!user) {
@@ -49,5 +67,34 @@ router.delete('/users/:id', adminAuth, async (req, res) => {
 });
 
 
+//U ovoj ruti je problem bez nje se korisnik moze uredivat
+router.patch('/users/:id', adminAuth, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { username, email } = req.body;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ error: 'Nevažeći ID korisnika.' });
+    }
+
+    const updates = {
+      username: username?.trim().toLowerCase(),
+      email: email?.trim().toLowerCase()
+    };
+
+    const user = await User.findByIdAndUpdate(
+      id,
+      updates,
+      { new: true, runValidators: true, context: 'query' }
+    ).select('-password -__v');
+
+    if (!user) return res.status(404).json({ error: 'Korisnik nije pronađen.' });
+
+    res.json({ success: true, user });
+  } catch (error) {
+    console.error('Greška pri ažuriranju korisnika:', error);
+    res.status(500).json({ error: 'Server greška' });
+  }
+});
 
 module.exports = router;

@@ -5,7 +5,6 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
-// Registracija
 router.post('/register', async (req, res) => {
   const { username, email, password } = req.body;
 
@@ -59,7 +58,6 @@ router.post('/register', async (req, res) => {
   }
 });
 
-// Prijava
 router.post('/login', async (req, res) => {
   const { usernameOrEmail, password } = req.body;
   const cleanedInput = usernameOrEmail.trim().toLowerCase();

@@ -1,23 +1,26 @@
 import React from 'react';
 import { Card, Image } from 'react-bootstrap';
+import { FaEnvelope } from 'react-icons/fa';
+import "../../App.css"
 
 function ProfileCard({ user }) {
   return (
-    <Card className="mb-4 shadow-sm">
-      <Card.Body>
-        <Card.Title className="mb-3 text-center">User Profile</Card.Title>
-        <Card.Text className="text-center">
-          <Image
-            src={`https://ui-avatars.com/api/?name=${user.username}&background=random`}
-            roundedCircle
-            width={80}
-            height={80}
-            className="mb-3"
-            alt="avatar"
-          /><br />
-          <strong>Username:</strong> {user.username}<br />
-          <strong>Email:</strong> {user.email}
-        </Card.Text>
+    <Card className="mb-4 shadow-sm" style={{ borderRadius: '1.2rem' }}>
+      <Card.Body className="d-flex flex-column align-items-center">
+        <Image
+          src={`https://ui-avatars.com/api/?name=${user.username}&background=random`}
+          roundedCircle
+          width={96}
+          height={96}
+          className="profile-avatar"
+          alt="avatar"
+        />
+        <div className="profile-username">{user.username}</div>
+
+        <div className="profile-info">
+          <FaEnvelope style={{ color: '#6c757d' }} />
+          <span>{user.email}</span>
+        </div>
       </Card.Body>
     </Card>
   );

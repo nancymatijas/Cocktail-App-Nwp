@@ -8,7 +8,6 @@ export function useCocktailData() {
   const [ingredientCocktails, setIngredientCocktails] = useState([]);
   const [ingredientLoading, setIngredientLoading] = useState(false);
 
-  // Fetch popular cocktails
   useEffect(() => {
     fetch('https://www.thecocktaildb.com/api/json/v1/1/filter.php?c=Cocktail')
       .then(res => res.json())
@@ -18,14 +17,12 @@ export function useCocktailData() {
       });
   }, []);
 
-  // Fetch all ingredients
   useEffect(() => {
     fetch('https://www.thecocktaildb.com/api/json/v1/1/list.php?i=list')
       .then(res => res.json())
       .then(data => setIngredients(data.drinks.map(item => item.strIngredient1)));
   }, []);
 
-  // Fetch cocktails for selected ingredient
   useEffect(() => {
     if (!selectedIngredient) return;
     setIngredientLoading(true);

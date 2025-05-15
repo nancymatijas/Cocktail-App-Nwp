@@ -1,18 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { Card, ListGroup, Button, Badge, Image } from 'react-bootstrap';
+import React from 'react';
+import { Card, ListGroup, Button, Badge, Image, Spinner, Alert } from 'react-bootstrap';
 import { jwtDecode } from 'jwt-decode';
+import { useUsers } from './hooks/useUsers';
+import { Link } from 'react-router-dom';
 
 function AdminProfile({ token }) {
-  const [users, setUsers] = useState([]);
   const adminId = jwtDecode(token).id;
-
-  useEffect(() => {
-    fetch('http://localhost:5000/api/users', {
-      headers: { 'Authorization': 'Bearer ' + token }
-    })
-      .then(res => res.json())
-      .then(data => setUsers(data));
-  }, [token]);
+  const { users, loading, error, setUsers } = useUsers(token);
 
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this user?')) return;
@@ -27,6 +21,8 @@ function AdminProfile({ token }) {
     <Card className="mt-4 shadow-sm">
       <Card.Body>
         <Card.Title className="mb-3 text-center">User List</Card.Title>
+        {loading && <Spinner animation="border" className="d-block mx-auto my-4" />}
+        {error && <Alert variant="danger">{error}</Alert>}
         <ListGroup variant="flush">
           {users.map(user => (
             <ListGroup.Item
@@ -50,13 +46,23 @@ function AdminProfile({ token }) {
                 </span>
               </div>
               {user._id !== adminId && (
-                <Button
-                  variant="outline-danger"
-                  size="sm"
-                  onClick={() => handleDelete(user._id)}
-                >
-                  Delete
-                </Button>
+                <div className="d-flex gap-2">
+                  <Button 
+                    as={Link}
+                    to={`/edit-user/${user._id}`}
+                    variant="outline-primary" 
+                    size="sm"
+                  >
+                    Edit
+                  </Button>
+                  <Button
+                    variant="outline-danger"
+                    size="sm"
+                    onClick={() => handleDelete(user._id)}
+                  >
+                    Delete
+                  </Button>
+                </div>
               )}
             </ListGroup.Item>
           ))}

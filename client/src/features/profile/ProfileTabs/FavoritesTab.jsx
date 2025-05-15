@@ -1,23 +1,39 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import CocktailList from '../components/CocktailList';
 
-function FavoritesTab({ favorites, cocktails, ingredientCocktails, onCocktailClick, onFavoriteToggle, loading }) {
+function FavoritesTab({ favorites, cocktails, ingredientCocktails, onCocktailClick, onFavoriteToggle }) {
+  const [extraCocktails, setExtraCocktails] = useState([]);
+
+  useEffect(() => {
+    const missingIds = [...favorites].filter(
+      id =>
+        !cocktails.some(c => c.idDrink === id) &&
+        !ingredientCocktails.some(c => c.idDrink === id)
+    );
+
+    Promise.all(
+      missingIds.map(id =>
+        fetch(`https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=${id}`)
+          .then(res => res.json())
+          .then(data => data.drinks ? data.drinks[0] : null)
+      )
+    ).then(results => setExtraCocktails(results.filter(Boolean)));
+  }, [favorites, cocktails, ingredientCocktails]);
+
   const getFavoriteCocktails = () => {
-    return [...favorites].map(id => 
-      cocktails.find(c => c.idDrink === id) || 
-      ingredientCocktails.find(c => c.idDrink === id)
-    ).filter(Boolean);
+    const localFavs = [...favorites]
+      .map(id =>
+        cocktails.find(c => c.idDrink === id) ||
+        ingredientCocktails.find(c => c.idDrink === id)
+      )
+      .filter(Boolean);
+    return [...localFavs, ...extraCocktails];
   };
 
   return (
     <>
-      <h3 className="text-center mb-4 mt-4">Favorite Cocktails</h3>
-      {loading ? (
-        <div className="text-center">
-          <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-          <p>Loading favorites...</p>
-        </div>
-      ) : favorites.size === 0 ? (
+      {/* <h3 className="text-center mb-4 mt-4">Favorite Cocktails</h3> */}
+      {favorites.size === 0 ? (
         <p className="text-center text-muted">No favorites yet. Click the ❤️ to add some!</p>
       ) : (
         <CocktailList 
