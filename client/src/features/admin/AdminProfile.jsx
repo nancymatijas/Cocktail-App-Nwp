@@ -27,14 +27,14 @@ function AdminProfile({ token }) {
           {users.map(user => (
             <ListGroup.Item
               key={user._id}
-              className="d-flex justify-content-between align-items-center"
+              className="d-flex justify-content-between align-items-center fs-6"
             >
               <div className="d-flex align-items-center">
                 <Image
                   src={`https://ui-avatars.com/api/?name=${user.username}&background=random`}
                   roundedCircle
-                  width={36}
-                  height={36}
+                  width={40}
+                  height={40}
                   className="me-3"
                   alt="avatar"
                 />
@@ -50,14 +50,14 @@ function AdminProfile({ token }) {
                   <Button 
                     as={Link}
                     to={`/edit-user/${user._id}`}
-                    variant="outline-primary" 
-                    size="sm"
+                    variant="primary" 
+                    size="md"
                   >
                     Edit
                   </Button>
                   <Button
-                    variant="outline-danger"
-                    size="sm"
+                    variant="danger"
+                    size="md"
                     onClick={() => handleDelete(user._id)}
                   >
                     Delete

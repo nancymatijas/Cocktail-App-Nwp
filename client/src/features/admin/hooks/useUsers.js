@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 export function useUsers(token) {
   const [users, setUsers] = useState([]);
@@ -21,26 +21,52 @@ export function useUsers(token) {
   return { users, setUsers, usersLoading, usersError };
 }
 
-export function useSingleUser(userId, token) {
+export const useSingleUser = (userId, token) => {
   const [userData, setUserData] = useState(null);
+  const [cocktails, setCocktails] = useState([]);
   const [formData, setFormData] = useState({ username: '', email: '' });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const fetchUserData = useCallback(async () => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/users/${userId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (!response.ok) throw new Error('Korisnik nije pronađen');
+      const data = await response.json();
+      setUserData(data);
+      setFormData({
+        username: data.username,
+        email: data.email
+      });
+    } catch (err) {
+      setError(err.message);
+    }
+  }, [userId, token]);
+
+  const fetchUserCocktails = useCallback(async () => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/users/${userId}/cocktails`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (!response.ok) throw new Error('Greška pri dohvatu koktela');
+      const data = await response.json();
+      setCocktails(data || []); // Osiguraj array čak i ako je null/undefined
+    } catch (err) {
+      setCocktails([]);
+      console.error('Error fetching cocktails:', err);
+    }
+  }, [userId, token]);
+
   useEffect(() => {
     if (!userId || !token) return;
-    setLoading(true);
-    setError(null);
 
-    const fetchUser = async () => {
+    const loadData = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/api/users/${userId}`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        if (!response.ok) throw new Error('User not found');
-        const data = await response.json();
-        setUserData(data);
-        setFormData({ username: data.username, email: data.email });
+        setLoading(true);
+        setError(null);
+        await Promise.all([fetchUserData(), fetchUserCocktails()]);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -48,12 +74,14 @@ export function useSingleUser(userId, token) {
       }
     };
 
-    fetchUser();
-  }, [userId, token]);
+    loadData();
+  }, [userId, token, fetchUserData, fetchUserCocktails]);
 
   const updateUser = async (formData) => {
-    setError(null);
     try {
+      setLoading(true);
+      setError(null);
+
       const response = await fetch(`http://localhost:5000/api/users/${userId}`, {
         method: 'PATCH',
         headers: {
@@ -62,22 +90,32 @@ export function useSingleUser(userId, token) {
         },
         body: JSON.stringify(formData)
       });
-      if (!response.ok) throw new Error('Update failed');
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Greška pri ažuriranju');
+      }
+
+      const updatedUser = await response.json();
+      setUserData(updatedUser);
       return true;
     } catch (err) {
       setError(err.message);
       return false;
+    } finally {
+      setLoading(false);
     }
   };
 
   return {
     userData,
+    cocktails,
     formData,
     setFormData,
     loading,
     error,
     updateUser,
+    refreshCocktails: fetchUserCocktails,
+    fetchUserData 
   };
-}
-
-
+};
