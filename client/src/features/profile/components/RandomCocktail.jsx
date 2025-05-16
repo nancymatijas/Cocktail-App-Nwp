@@ -17,7 +17,7 @@ function RandomCocktail() {
       const measure = cocktail[`strMeasure${i}`];
       if (ingredient) {
         ingredients.push(
-          <Col key={i} xs={6} md={4} lg={3} className="mb-3">
+          <Col key={i} xs={6} md={4} lg={3} className="mb-2">
             <div className="cocktail-ingredient">
               <img
                 src={`https://www.thecocktaildb.com/images/ingredients/${encodeURIComponent(ingredient)}.png`}
@@ -55,7 +55,7 @@ function RandomCocktail() {
                 />
               </Col>
               <Col md={8} className="text-start">
-                <Card.Title className="cocktail-title">
+                <Card.Title className="mb-2 display-6 fw-bold">
                   {cocktail.strDrink}{' '}
                   {cocktail.strAlcoholic === "Alcoholic" ? (
                     <span role="img" aria-label="alcoholic">🍸</span>
@@ -63,7 +63,7 @@ function RandomCocktail() {
                     <span role="img" aria-label="non-alcoholic">🥤</span>
                   )}
                 </Card.Title>
-                <div className="mb-2">
+                <div className="mb-3">
                   <Badge bg="info" className="me-2">{cocktail.strCategory}</Badge>
                   <Badge bg="secondary">{cocktail.strGlass}</Badge>
                 </div>
@@ -71,7 +71,7 @@ function RandomCocktail() {
                 <Row className="g-2 ingredients-container">
                   {renderIngredients(cocktail)}
                 </Row>
-                <h5 className="mt-4">Instructions:</h5>
+                <h5 className="mt-3">Instructions:</h5>
                 <p>{cocktail.strInstructions}</p>
                 <Button onClick={fetchRandomCocktail} variant="info" className="mt-2">
                   Show another random cocktail

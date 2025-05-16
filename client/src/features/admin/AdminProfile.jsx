@@ -20,7 +20,7 @@ function AdminProfile({ token }) {
   return (
     <Card className="mt-4 shadow-sm">
       <Card.Body>
-        <Card.Title className="mb-3 text-center">User List</Card.Title>
+        <Card.Title className="mb-3 text-center display-6 fw-bold">User List</Card.Title>
         {loading && <Spinner animation="border" className="d-block mx-auto my-4" />}
         {error && <Alert variant="danger">{error}</Alert>}
         <ListGroup variant="flush">

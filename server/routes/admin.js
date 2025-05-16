@@ -4,27 +4,25 @@ const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 
-
 const adminAuth = async (req, res, next) => {
-  const authHeader = req.headers.authorization;
+  const authHeader = req.headers['authorization'];
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return res.status(401).json({ error: 'Nedostaje token' });
+    return res.status(401).json({ error: 'Nevažeći autorizacijski format' });
   }
 
   const token = authHeader.split(' ')[1];
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await User.findById(decoded.id);
+    const user = await User.findById(decoded.id).select('role');
     if (!user || user.role !== 'admin') {
-      return res.status(403).json({ error: 'Nemaš ovlasti za ovu radnju!' });
+      return res.status(403).json({ error: 'Nedovoljne ovlasti' });
     }
-    req.user = user; 
+    req.user = user;
     next();
   } catch (err) {
     res.status(401).json({ error: 'Nevažeći token' });
   }
 };
-
 
 router.get('/users', adminAuth, async (req, res) => {
   try {
@@ -38,11 +36,9 @@ router.get('/users', adminAuth, async (req, res) => {
 router.get('/users/:id', adminAuth, async (req, res) => {
   try {
     const user = await User.findById(req.params.id).select('-password -__v');
-    
     if (!user) {
       return res.status(404).json({ error: "Korisnik nije pronađen." });
     }
-    
     res.json(user);
   } catch (err) {
     console.error("Greška pri dohvaćanju korisnika:", err);
@@ -50,12 +46,10 @@ router.get('/users/:id', adminAuth, async (req, res) => {
   }
 });
 
-
 router.delete('/users/:id', adminAuth, async (req, res) => {
   try {
     const userId = req.params.id; 
     const user = await User.findByIdAndDelete(userId);
-    
     if (!user) {
       return res.status(404).json({ error: "Korisnik nije pronađen." });
     }
@@ -66,8 +60,6 @@ router.delete('/users/:id', adminAuth, async (req, res) => {
   }
 });
 
-
-//U ovoj ruti je problem bez nje se korisnik moze uredivat
 router.patch('/users/:id', adminAuth, async (req, res) => {
   try {
     const { id } = req.params;
