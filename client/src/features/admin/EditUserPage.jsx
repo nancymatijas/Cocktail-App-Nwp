@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Form, Button, Spinner, Alert, Card, Table, Image } from 'react-bootstrap';
 import AdminNavbar from './AdminNavbar';

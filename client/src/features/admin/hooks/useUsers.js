@@ -21,6 +21,7 @@ export function useUsers(token) {
   return { users, setUsers, usersLoading, usersError };
 }
 
+
 export const useSingleUser = (userId, token) => {
   const [userData, setUserData] = useState(null);
   const [cocktails, setCocktails] = useState([]);
@@ -52,7 +53,7 @@ export const useSingleUser = (userId, token) => {
       });
       if (!response.ok) throw new Error('Greška pri dohvatu koktela');
       const data = await response.json();
-      setCocktails(data || []); // Osiguraj array čak i ako je null/undefined
+      setCocktails(data || []); 
     } catch (err) {
       setCocktails([]);
       console.error('Error fetching cocktails:', err);

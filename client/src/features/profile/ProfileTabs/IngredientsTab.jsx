@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { Spinner, Button } from 'react-bootstrap';
 import CocktailList from '../components/CocktailList';
 import "../../../App.css"

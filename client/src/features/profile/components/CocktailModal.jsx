@@ -1,4 +1,3 @@
-import React from 'react';
 import { Modal, Button, Row, Col, Badge } from 'react-bootstrap';
 import "../../../App.css"
 

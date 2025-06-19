@@ -1,4 +1,3 @@
-import React from 'react';
 import { Card, ListGroup, Button, Badge, Image, Spinner, Alert } from 'react-bootstrap';
 import { jwtDecode } from 'jwt-decode';
 import { useUsers } from './hooks/useUsers';

@@ -1,4 +1,3 @@
-import React from 'react';
 import CocktailSearch from '../components/CocktailSearch';
 
 function SearchTab({ onCocktailClick, favorites, onFavoriteToggle }) {

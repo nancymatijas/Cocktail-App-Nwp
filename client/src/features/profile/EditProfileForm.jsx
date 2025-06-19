@@ -1,4 +1,3 @@
-import React from 'react';
 import { Form, Button } from 'react-bootstrap';
 import ProfileFields from './components/ProfileFields';
 import { useEditProfile } from './hooks/useEditProfile';

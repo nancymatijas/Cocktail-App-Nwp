@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { Card, Button, Spinner, Badge, Row, Col } from 'react-bootstrap';
 import { useRandomCocktail } from '../hooks/useRandomCocktail';
 import "../../../App.css";

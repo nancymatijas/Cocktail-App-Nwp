@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Form, Spinner, InputGroup, Button } from 'react-bootstrap';
 import CocktailList from './CocktailList';
 

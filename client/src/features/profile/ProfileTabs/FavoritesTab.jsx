@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import CocktailList from '../components/CocktailList';
 
 function FavoritesTab({ favorites, cocktails, ingredientCocktails, onCocktailClick, onFavoriteToggle }) {

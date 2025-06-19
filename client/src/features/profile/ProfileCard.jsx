@@ -1,4 +1,3 @@
-import React from 'react';
 import { Card, Image } from 'react-bootstrap';
 import { FaEnvelope } from 'react-icons/fa';
 import "../../App.css"

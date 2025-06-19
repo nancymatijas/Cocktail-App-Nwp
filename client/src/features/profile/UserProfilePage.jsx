@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Container, Row, Col, Card, Button, Alert } from 'react-bootstrap';
 import ProfileNavbar from '../profile/ProfileNavbar';
 import EditProfileForm from './EditProfileForm';
